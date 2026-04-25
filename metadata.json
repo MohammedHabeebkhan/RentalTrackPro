@@ -1,0 +1,7 @@
+{
+  "name": "Rental Track Pro - Tenant & Finance Manager",
+  "description": "A comprehensive tenant maintenance and financial tracking application featuring KPI dashboards, document management, and AI-assisted lease analysis.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
