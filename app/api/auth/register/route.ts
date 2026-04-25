@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { NextResponse } from 'next/server';
 import { signJwt } from '../../../../lib/jwt';
 import { connectToDatabase } from '../../../../lib/mongodb';
