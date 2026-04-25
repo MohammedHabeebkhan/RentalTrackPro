@@ -5,10 +5,5 @@
 [build.environment]
   NODE_VERSION = "18"
 
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-[functions]
-  directory = ".next/server/app/api"
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
