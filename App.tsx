@@ -10,6 +10,7 @@ import Settings from './components/Settings';
 import TenantDetails from './components/TenantDetails';
 import Tenants from './components/Tenants';
 import { MOCK_TENANTS } from './constants';
+import { calculateEffectiveMonthlyRent } from './lib/rent';
 import { fetchTenants, saveTenantToDB, updateTenantInDB } from './services/tenantService';
 import { AppAlert, AuthState, PaymentRecord, Tenant, Theme, User } from './types';
 
@@ -89,7 +90,7 @@ const App: React.FC = () => {
           description: `Rent payment for the current period is ${currentDay - dueDay} days late.`,
           tenantId: tenant.id,
           date: new Date(today.getFullYear(), today.getMonth(), dueDay).toLocaleDateString(),
-          amount: tenant.monthlyRent
+          amount: calculateEffectiveMonthlyRent(tenant)
         });
       } else if (dueDay - currentDay <= 3 && currentDay <= dueDay) {
         generatedAlerts.push({
@@ -99,7 +100,7 @@ const App: React.FC = () => {
           description: `Monthly rent payment is due in ${dueDay - currentDay} days.`,
           tenantId: tenant.id,
           date: new Date(today.getFullYear(), today.getMonth(), dueDay).toLocaleDateString(),
-          amount: tenant.monthlyRent
+          amount: calculateEffectiveMonthlyRent(tenant)
         });
       }
 
@@ -239,7 +240,7 @@ const App: React.FC = () => {
 
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard tenants={tenants} alerts={alerts} theme={theme} />;
+        return <Dashboard tenants={tenants} alerts={alerts} theme={theme} onViewTenant={handleViewTenant} />;
       case 'tenants':
         return (
           <Tenants 
@@ -272,7 +273,7 @@ const App: React.FC = () => {
           />
         );
       default:
-        return <Dashboard tenants={tenants} alerts={alerts} theme={theme} />;
+        return <Dashboard tenants={tenants} alerts={alerts} theme={theme} onViewTenant={handleViewTenant} />;
     }
   };
 
@@ -288,6 +289,8 @@ const App: React.FC = () => {
         onLogout={handleLogout}
         user={user}
         alerts={alerts}
+        tenants={tenants}
+        onViewTenant={handleViewTenant}
         theme={theme}
         onThemeChange={handleThemeChange}
       >

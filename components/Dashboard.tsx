@@ -2,20 +2,35 @@
 import { Activity, ArrowDownRight, ArrowRight, ArrowUpRight, Bell, Calendar, DollarSign, FileWarning, ShieldAlert, Sparkles } from 'lucide-react';
 import React, { useMemo } from 'react';
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
+import { calculateEffectiveMonthlyRent } from '../lib/rent';
 import { AppAlert, FinancialStats, Tenant, Theme } from '../types';
 
 interface DashboardProps {
   tenants: Tenant[];
   alerts: AppAlert[];
   theme: Theme;
+  onViewTenant?: (tenant: Tenant) => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ tenants, alerts, theme }) => {
+const Dashboard: React.FC<DashboardProps> = ({ tenants, alerts, theme, onViewTenant }) => {
   const [aiAdvice, setAiAdvice] = React.useState<string>("Appseonit AI is analyzing your portfolio performance...");
+
+  // Calculate current financial year (April 1 to March 31)
+  const getCurrentFinancialYear = () => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    
+    if (currentMonth >= 4) {
+      return `${currentYear}-${currentYear + 1}`;
+    } else {
+      return `${currentYear - 1}-${currentYear}`;
+    }
+  };
 
   const stats: FinancialStats = useMemo(() => {
     const activeTenants = tenants.filter(t => t.status === 'Active');
-    const monthlyExpected = activeTenants.reduce((sum, t) => sum + t.monthlyRent, 0);
+    const monthlyExpected = activeTenants.reduce((sum, t) => sum + calculateEffectiveMonthlyRent(t), 0);
     const yearlyExpected = monthlyExpected * 12;
     
     const collected = tenants.reduce((total, tenant) => {
@@ -130,7 +145,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tenants, alerts, theme }) => {
         </div>
         <div className={`flex items-center gap-3 px-6 py-3 rounded-2xl border transition-colors ${cardBg}`}>
           <Calendar size={18} className="text-indigo-500" />
-          <span className={`text-sm font-black ${textColor}`}>FY 2025-2026</span>
+          <span className={`text-sm font-black ${textColor}`}>FY {getCurrentFinancialYear()}</span>
         </div>
       </div>
 
@@ -197,23 +212,30 @@ const Dashboard: React.FC<DashboardProps> = ({ tenants, alerts, theme }) => {
                     <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Everything is up to date.</p>
                   </div>
                 ) : (
-                  alerts.slice(0, 4).map(alert => (
-                    <div key={alert.id} className={`${theme === 'dark' ? 'bg-slate-800/40' : 'bg-slate-50'} p-5 rounded-2xl border border-transparent hover:border-indigo-500/20 transition-all group`}>
-                      <div className="flex items-start gap-4">
-                        <div className={`p-2.5 rounded-xl text-white ${getAlertColor(alert.type, alert.title)}`}>
-                          {getAlertIcon(alert.type, alert.title)}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-black uppercase tracking-tight truncate ${textColor}`}>{alert.title}</p>
-                          <p className="text-[11px] font-medium text-slate-500 mt-1 line-clamp-1">{alert.description}</p>
-                          <div className="flex items-center justify-between mt-3">
-                            <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">{alert.date}</span>
-                            <ArrowRight size={14} className="text-slate-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  alerts.slice(0, 4).map(alert => {
+                    const tenant = tenants.find(t => t.id === alert.tenantId);
+                    return (
+                      <div 
+                        key={alert.id} 
+                        className={`${theme === 'dark' ? 'bg-slate-800/40' : 'bg-slate-50'} p-5 rounded-2xl border border-transparent hover:border-indigo-500/20 transition-all group cursor-pointer`}
+                        onClick={() => tenant && onViewTenant && onViewTenant(tenant)}
+                      >
+                        <div className="flex items-start gap-4">
+                          <div className={`p-2.5 rounded-xl text-white ${getAlertColor(alert.type, alert.title)}`}>
+                            {getAlertIcon(alert.type, alert.title)}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-xs font-black uppercase tracking-tight truncate ${textColor}`}>{alert.title}</p>
+                            <p className="text-[11px] font-medium text-slate-500 mt-1 line-clamp-1">{alert.description}</p>
+                            <div className="flex items-center justify-between mt-3">
+                              <span className="text-[10px] font-black text-indigo-500 uppercase tracking-widest">{alert.date}</span>
+                              <ArrowRight size={14} className="text-slate-400 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
            </div>

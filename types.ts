@@ -17,6 +17,7 @@ export interface Tenant {
   leaseStart: string;
   leaseEnd: string;
   monthlyRent: number;
+  yearlyPercentage?: number;
   advancePayment?: number;
   status: 'Active' | 'Pending' | 'Terminated';
   photoUrl?: string;

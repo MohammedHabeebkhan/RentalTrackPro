@@ -20,6 +20,11 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   const body = await request.json();
   await connectToDatabase();
 
+  if (body.yearlyPercentage !== undefined) {
+    const yearlyPercentage = Number(body.yearlyPercentage);
+    body.yearlyPercentage = Number.isFinite(yearlyPercentage) ? yearlyPercentage : 0;
+  }
+
   // Ensure user can only update their own tenants or tenants without userId (legacy)
   const updatedTenant = await TenantModel.findOneAndUpdate(
     {

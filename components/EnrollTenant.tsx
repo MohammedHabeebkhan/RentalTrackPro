@@ -1,16 +1,16 @@
 
-import React, { useState, useRef } from 'react';
-import { 
-  FileText, 
-  Image as ImageIcon, 
-  X, 
-  ShieldCheck, 
-  Loader2,
-  CheckCircle2,
-  Activity
+import {
+    Activity,
+    CheckCircle2,
+    FileText,
+    Image as ImageIcon,
+    Loader2,
+    ShieldCheck,
+    X
 } from 'lucide-react';
-import { Tenant, Theme } from '../types';
+import React, { useEffect, useRef, useState } from 'react';
 import { uploadToCloudinary } from '../services/uploadService';
+import { Tenant, Theme } from '../types';
 
 interface EnrollTenantProps {
   onAdd: (tenant: Omit<Tenant, 'id'>) => void;
@@ -31,6 +31,20 @@ const EnrollTenant: React.FC<EnrollTenantProps> = ({ onAdd, onCancel, initialDat
     advancePayment: initialData?.advancePayment || 0,
     status: initialData?.status || 'Active' as 'Active' | 'Pending' | 'Terminated'
   });
+
+  useEffect(() => {
+    setFormData({
+      fullName: initialData?.fullName || '',
+      email: initialData?.email || '',
+      phone: initialData?.phone || '',
+      propertyAddress: initialData?.propertyAddress || '',
+      leaseStart: initialData?.leaseStart || '',
+      leaseEnd: initialData?.leaseEnd || '',
+      monthlyRent: initialData?.monthlyRent || 0,
+      advancePayment: initialData?.advancePayment || 0,
+      status: initialData?.status || 'Active' as 'Active' | 'Pending' | 'Terminated'
+    });
+  }, [initialData]);
 
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(initialData?.photoUrl || null);

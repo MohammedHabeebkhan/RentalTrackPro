@@ -1,6 +1,7 @@
 
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { calculateEffectiveMonthlyRent } from '../lib/rent';
 import { Tenant } from '../types';
 
 // Updated high-quality version of the logo for the PDF
@@ -46,9 +47,11 @@ export const exportTenantStatement = (tenant: Tenant) => {
   doc.setFont('helvetica', 'bold');
   doc.text('Property Info', 120, 60);
   doc.setFont('helvetica', 'normal');
+  const currentRent = calculateEffectiveMonthlyRent(tenant);
   doc.text(`Address: ${tenant.propertyAddress}`, 120, 68);
-  doc.text(`Monthly Rent: ${formatCurrency(tenant.monthlyRent)}`, 120, 74);
-  doc.text(`Advance Paid: ${formatCurrency(tenant.advancePayment || 0)}`, 120, 80);
+  doc.text(`Monthly Rent: ${formatCurrency(currentRent)}`, 120, 74);
+  doc.text(`Annual Increase: ${tenant.yearlyPercentage ?? 0}%`, 120, 80);
+  doc.text(`Advance Paid: ${formatCurrency(tenant.advancePayment || 0)}`, 120, 86);
 
   const tableData = (tenant.paymentHistory || []).map(p => [
     new Date(p.date).toLocaleDateString(),
@@ -115,12 +118,17 @@ export const generateInvoicePDF = (tenant: Tenant, amount: number) => {
   doc.text(tenant.fullName, 15, 83);
   doc.text(tenant.propertyAddress, 15, 90);
   doc.text(tenant.phone, 15, 97);
+  doc.text(`Annual Increase: ${tenant.yearlyPercentage ?? 0}%`, 15, 104);
 
   autoTable(doc, {
-    startY: 110,
+    startY: 118,
     head: [['Description', 'Period', 'Total Amount']],
     body: [
-      ['Monthly Rent Charge', `${new Date().toLocaleString('default', { month: 'long' })} ${new Date().getFullYear()}`, formatCurrency(amount)],
+      [
+        `Monthly Rent Charge${tenant.yearlyPercentage ? ` (includes ${tenant.yearlyPercentage}% annual increase)` : ''}`,
+        `${new Date().toLocaleString('default', { month: 'long' })} ${new Date().getFullYear()}`,
+        formatCurrency(amount)
+      ],
       ['Property Maintenance', 'Cycle Period', 'INR 0.00'],
     ],
     theme: 'striped',

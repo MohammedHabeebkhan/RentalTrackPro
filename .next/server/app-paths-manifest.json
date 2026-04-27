@@ -1,10 +1,4 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/tenants/[id]/route": "app/api/tenants/[id]/route.js",
-  "/api/auth/profile/route": "app/api/auth/profile/route.js",
-  "/page": "app/page.js",
-  "/api/auth/login/route": "app/api/auth/login/route.js",
-  "/api/tenants/route": "app/api/tenants/route.js",
-  "/api/auth/register/route": "app/api/auth/register/route.js",
-  "/api/gemini/route": "app/api/gemini/route.js"
+  "/api/gemini/route": "app/api/gemini/route.js",
+  "/page": "app/page.js"
 }

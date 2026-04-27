@@ -10,6 +10,7 @@ export interface TenantDocument extends Document {
   leaseStart: string;
   leaseEnd: string;
   monthlyRent: number;
+  yearlyPercentage?: number;
   advancePayment?: number;
   status: 'Active' | 'Pending' | 'Terminated';
   photoUrl?: string;
@@ -51,6 +52,7 @@ const tenantSchema = new Schema<TenantDocument>(
     leaseStart: { type: String, required: true },
     leaseEnd: { type: String, required: true },
     monthlyRent: { type: Number, required: true },
+    yearlyPercentage: { type: Number, default: 0 },
     advancePayment: { type: Number, default: 0 },
     status: { type: String, enum: ['Active', 'Pending', 'Terminated'], default: 'Active' },
     photoUrl: { type: String },

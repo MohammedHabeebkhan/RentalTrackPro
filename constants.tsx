@@ -11,6 +11,7 @@ export const MOCK_TENANTS: Tenant[] = [
     leaseStart: '2023-01-01',
     leaseEnd: '2025-01-01',
     monthlyRent: 1200,
+    yearlyPercentage: 5,
     status: 'Active',
     photoUrl: 'https://picsum.photos/seed/john/200/200',
     paymentHistory: [
@@ -28,6 +29,7 @@ export const MOCK_TENANTS: Tenant[] = [
     leaseStart: '2023-06-15',
     leaseEnd: '2024-06-15',
     monthlyRent: 1550,
+    yearlyPercentage: 3,
     status: 'Active',
     photoUrl: 'https://picsum.photos/seed/jane/200/200',
     paymentHistory: [
@@ -44,6 +46,7 @@ export const MOCK_TENANTS: Tenant[] = [
     leaseStart: '2022-11-01',
     leaseEnd: '2023-11-01',
     monthlyRent: 2100,
+    yearlyPercentage: 4,
     status: 'Pending',
     photoUrl: 'https://picsum.photos/seed/robert/200/200',
     paymentHistory: []

@@ -1,29 +1,30 @@
 
-import React, { useState, useEffect } from 'react';
-import { 
-  X, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Calendar, 
-  CreditCard, 
-  FileText, 
-  ShieldCheck, 
-  ArrowUpRight, 
-  History,
-  TrendingUp,
-  Download,
-  ChevronRight,
-  Loader2,
-  Plus,
-  Check,
-  Edit3,
-  Wallet,
-  AlertTriangle,
-  CheckCircle2
+import {
+    AlertTriangle,
+    ArrowUpRight,
+    Calendar,
+    Check,
+    CheckCircle2,
+    ChevronRight,
+    CreditCard,
+    Download,
+    Edit3,
+    FileText,
+    History,
+    Loader2,
+    Mail,
+    MapPin,
+    Phone,
+    Plus,
+    ShieldCheck,
+    TrendingUp,
+    Wallet,
+    X
 } from 'lucide-react';
-import { Tenant, PaymentRecord, Theme } from '../types';
+import React, { useEffect, useState } from 'react';
+import { calculateEffectiveMonthlyRent, getNextRentIncreaseDate } from '../lib/rent';
 import { exportTenantStatement, generateInvoicePDF } from '../services/pdfService';
+import { PaymentRecord, Tenant, Theme } from '../types';
 
 interface TenantDetailsProps {
   tenant: Tenant;
@@ -41,9 +42,12 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
   const [editingPaymentId, setEditingPaymentId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ message: string, type: 'success' | 'error' } | null>(null);
   
+  const currentRent = calculateEffectiveMonthlyRent(tenant);
+  const nextIncreaseDate = getNextRentIncreaseDate(tenant);
+
   const [paymentForm, setPaymentForm] = useState<Omit<PaymentRecord, 'id'>>({
     date: new Date().toISOString().split('T')[0],
-    amount: tenant.monthlyRent,
+    amount: currentRent,
     method: 'Online',
     status: 'Paid',
     reference: ''
@@ -62,6 +66,34 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
   const totalPaid = tenant.paymentHistory?.filter(p => p.status === 'Paid').reduce((sum, p) => sum + p.amount, 0) || 0;
   const pendingAmount = tenant.paymentHistory?.filter(p => p.status === 'Pending').reduce((sum, p) => sum + p.amount, 0) || 0;
 
+  // Get lease status with color scheme matching Tenants.tsx
+  const getLeaseStatus = (leaseEnd: string) => {
+    const today = new Date();
+    const end = new Date(leaseEnd);
+    const diffTime = end.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays <= 0) return { label: 'Expired', color: 'bg-rose-500/10 text-rose-500' };
+    if (diffDays <= 30) return { label: `${diffDays}d Left`, color: 'bg-amber-500/10 text-amber-500' };
+    
+    // For remaining time > 30 days, show months and days
+    const months = Math.floor(diffDays / 30);
+    const days = diffDays % 30;
+    let label = '';
+    
+    if (months > 0 && days > 0) {
+      label = `${months}m ${days}d`;
+    } else if (months > 0) {
+      label = `${months}m`;
+    } else {
+      label = `${days}d`;
+    }
+    
+    return { label, color: 'bg-slate-500/10 text-slate-400' };
+  };
+
+  const leaseStatus = getLeaseStatus(tenant.leaseEnd);
+
   const handleExportPDF = async () => {
     setIsExporting(true);
     try {
@@ -76,7 +108,7 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
     setIsGeneratingInvoice(true);
     try {
       await new Promise(r => setTimeout(r, 800));
-      generateInvoicePDF(tenant, tenant.monthlyRent);
+      generateInvoicePDF(tenant, currentRent);
     } finally {
       setIsGeneratingInvoice(false);
     }
@@ -135,7 +167,7 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
       setEditingPaymentId(null);
       setPaymentForm({
         date: new Date().toISOString().split('T')[0],
-        amount: tenant.monthlyRent,
+        amount: currentRent,
         method: 'Online',
         status: 'Paid',
         reference: ''
@@ -174,9 +206,16 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
                     {tenant.status}
                   </span>
                </div>
-               <div className="flex items-center gap-6 mt-3 text-sm text-slate-500 font-bold">
-                  <div className="flex items-center gap-2"><Mail size={16} className="text-indigo-400" /> {tenant.email}</div>
-                  <div className="flex items-center gap-2"><Phone size={16} className="text-indigo-400" /> {tenant.phone}</div>
+               <div className="flex flex-col gap-3 mt-3">
+                  <div className="flex items-center gap-6 text-sm text-slate-500 font-bold">
+                     <div className="flex items-center gap-2"><Mail size={16} className="text-indigo-400" /> {tenant.email}</div>
+                     <div className="flex items-center gap-2"><Phone size={16} className="text-indigo-400" /> {tenant.phone}</div>
+                  </div>
+                  <div className="flex items-center gap-4 text-xs font-bold">
+                     <div className="flex items-center gap-2 text-slate-500"><Calendar size={14} className="text-indigo-400" /> Start: {new Date(tenant.leaseStart).toLocaleDateString('default', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+                     <div className="flex items-center gap-2 text-slate-500"><Calendar size={14} className="text-indigo-400" /> End: {new Date(tenant.leaseEnd).toLocaleDateString('default', { day: '2-digit', month: 'short', year: 'numeric' })}</div>
+                     <span className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase ${leaseStatus.color}`}>{leaseStatus.label}</span>
+                  </div>
                </div>
             </div>
           </div>
@@ -204,8 +243,16 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
              </div>
              <div className={`${cardBg} p-8 rounded-[2.5rem] border`}>
                 <Calendar size={24} className="text-indigo-500 mb-4" />
-                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Monthly Rent</p>
-                <p className={`text-xl font-black mt-1 ${textColor}`}>₹{tenant.monthlyRent.toLocaleString()}</p>
+                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Current Monthly Rent</p>
+                <p className={`text-xl font-black mt-1 ${textColor}`}>₹{currentRent.toLocaleString()}</p>
+                {tenant.yearlyPercentage ? (
+                  <>
+                    <p className="text-[10px] mt-2 text-slate-500">Annual increase: {tenant.yearlyPercentage}%</p>
+                    {nextIncreaseDate ? (
+                      <p className="text-[10px] mt-1 text-slate-500">Next {tenant.yearlyPercentage}% increase on {nextIncreaseDate.toLocaleDateString()}</p>
+                    ) : null}
+                  </>
+                ) : null}
              </div>
           </div>
 

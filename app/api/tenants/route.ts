@@ -51,8 +51,11 @@ export async function POST(request: Request) {
   const body = await request.json();
   await connectToDatabase();
 
+  const yearlyPercentage = Number(body.yearlyPercentage);
+
   const newTenant = await TenantModel.create({
     ...body,
+    yearlyPercentage: Number.isFinite(yearlyPercentage) ? yearlyPercentage : 0,
     userId: decodedToken.id, // Add userId from authenticated user
     createdAt: new Date(),
     paymentHistory: body.paymentHistory || []

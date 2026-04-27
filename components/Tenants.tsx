@@ -1,14 +1,14 @@
 
 import {
-  AlertTriangle,
-  CheckCircle,
-  Clock,
-  Edit2,
-  Eye,
-  FileQuestion,
-  MapPin,
-  Search,
-  Users
+    AlertTriangle,
+    CheckCircle,
+    Clock,
+    Edit2,
+    Eye,
+    FileQuestion,
+    MapPin,
+    Search,
+    Users
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { Tenant, Theme } from '../types';
@@ -159,7 +159,12 @@ const Tenants: React.FC<TenantsProps> = ({ tenants, onEdit, onViewDetails, theme
                       </div>
                     </td>
                     <td className="px-8 py-5">
-                      <span className={`text-sm font-black ${textColor}`}>₹{tenant.monthlyRent.toLocaleString()}</span>
+                      <div className="flex flex-col gap-1">
+                        <span className={`text-sm font-black ${textColor}`}>₹{tenant.monthlyRent.toLocaleString()}</span>
+                        {tenant.yearlyPercentage ? (
+                          <span className="text-[10px] text-slate-500 uppercase tracking-widest">+{tenant.yearlyPercentage}% annual</span>
+                        ) : null}
+                      </div>
                     </td>
                     <td className="px-8 py-5 text-right">
                       <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all">

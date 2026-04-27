@@ -1,17 +1,15 @@
 
 import {
-  Bell,
-  LayoutDashboard,
-  LogOut,
-  Menu,
-  Moon,
-  Settings as SettingsIcon,
-  Sun,
-  UserPlus,
-  Users
+    Bell,
+    LayoutDashboard,
+    LogOut,
+    Menu,
+    Settings as SettingsIcon,
+    UserPlus,
+    Users
 } from 'lucide-react';
 import React from 'react';
-import { AppAlert, Theme, User } from '../types';
+import { AppAlert, Tenant, Theme, User } from '../types';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -20,11 +18,13 @@ interface LayoutProps {
   onLogout: () => void;
   user: User;
   alerts: AppAlert[];
+  tenants: Tenant[];
+  onViewTenant?: (tenant: Tenant) => void;
   theme: Theme;
   onThemeChange: (theme: Theme) => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLogout, user, alerts, theme, onThemeChange }) => {
+const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLogout, user, alerts, tenants, onViewTenant, theme, onThemeChange }) => {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const [isAlertsOpen, setIsAlertsOpen] = React.useState(false);
 
@@ -50,7 +50,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
       )}
 
       <aside className={`
-        fixed inset-y-0 left-0 w-72 ${sidebarColor} text-white transform transition-transform duration-300 ease-in-out z-30
+        fixed inset-y-0 left-0 w-65 ${sidebarColor} text-white transform transition-transform duration-300 ease-in-out z-30
         lg:relative lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
       `}>
         <div className="flex flex-col h-full">
@@ -88,25 +88,7 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
             ))}
           </nav>
 
-          <div className="p-6 border-t border-slate-800 space-y-8">
-            <div className="space-y-4">
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest text-center">Interface Theme</p>
-              <div className="flex bg-slate-800 p-1.5 rounded-2xl">
-                <button 
-                  onClick={() => onThemeChange('light')}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all ${theme === 'light' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
-                >
-                  <Sun size={14} /> <span className="text-xs font-bold">Light</span>
-                </button>
-                <button 
-                  onClick={() => onThemeChange('dark')}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl transition-all ${theme === 'dark' ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-400 hover:text-white'}`}
-                >
-                  <Moon size={14} /> <span className="text-xs font-bold">Dark</span>
-                </button>
-              </div>
-            </div>
-
+          <div className="p-6 border-t border-slate-800 space-y-3">
             <div className="flex items-center gap-4 px-4 py-4 bg-white/5 rounded-3xl">
               <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-lg font-black border-2 border-white/10 shadow-lg overflow-hidden">
                 {user.photoUrl ? (
@@ -179,7 +161,17 @@ const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLo
                         </div>
                       ) : (
                         alerts.map(alert => (
-                          <div key={alert.id} className={`p-5 border-b transition-colors cursor-pointer group ${theme === 'dark' ? 'border-slate-800 hover:bg-slate-800/50' : 'border-slate-50 hover:bg-slate-50'}`}>
+                          <div 
+                            key={alert.id} 
+                            className={`p-5 border-b transition-colors cursor-pointer group ${theme === 'dark' ? 'border-slate-800 hover:bg-slate-800/50' : 'border-slate-50 hover:bg-slate-50'}`}
+                            onClick={() => {
+                              const tenant = tenants.find(t => t.id === alert.tenantId);
+                              if (tenant && onViewTenant) {
+                                onViewTenant(tenant);
+                                setIsAlertsOpen(false);
+                              }
+                            }}
+                          >
                             <div className="flex gap-4">
                               <div className={`p-3 rounded-2xl h-fit ${alert.type === 'overdue' ? 'bg-rose-500/10 text-rose-500' : 'bg-indigo-500/10 text-indigo-500'}`}>
                                 <Bell size={18} />
