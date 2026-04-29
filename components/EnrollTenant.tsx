@@ -27,8 +27,10 @@ const EnrollTenant: React.FC<EnrollTenantProps> = ({ onAdd, onCancel, initialDat
     propertyAddress: initialData?.propertyAddress || '',
     leaseStart: initialData?.leaseStart || '',
     leaseEnd: initialData?.leaseEnd || '',
-    monthlyRent: initialData?.monthlyRent || 0,
-    advancePayment: initialData?.advancePayment || 0,
+    tenantSince: initialData?.tenantSince || new Date().toISOString().split('T')[0],
+    monthlyRent: initialData?.monthlyRent?.toString() || '',
+    yearlyPercentage: initialData?.yearlyPercentage || 0,
+    advancePayment: initialData?.advancePayment?.toString() || '',
     status: initialData?.status || 'Active' as 'Active' | 'Pending' | 'Terminated'
   });
 
@@ -40,8 +42,10 @@ const EnrollTenant: React.FC<EnrollTenantProps> = ({ onAdd, onCancel, initialDat
       propertyAddress: initialData?.propertyAddress || '',
       leaseStart: initialData?.leaseStart || '',
       leaseEnd: initialData?.leaseEnd || '',
-      monthlyRent: initialData?.monthlyRent || 0,
-      advancePayment: initialData?.advancePayment || 0,
+      tenantSince: initialData?.tenantSince || new Date().toISOString().split('T')[0],
+      monthlyRent: initialData?.monthlyRent?.toString() || '',
+      yearlyPercentage: initialData?.yearlyPercentage || 0,
+      advancePayment: initialData?.advancePayment?.toString() || '',
       status: initialData?.status || 'Active' as 'Active' | 'Pending' | 'Terminated'
     });
   }, [initialData]);
@@ -101,8 +105,13 @@ const EnrollTenant: React.FC<EnrollTenantProps> = ({ onAdd, onCancel, initialDat
       let finalPhotoUrl = photoPreview;
       if (photo) finalPhotoUrl = await uploadToCloudinary(photo);
 
+      const parsedMonthlyRent = Number(formData.monthlyRent);
+      const parsedAdvancePayment = Number(formData.advancePayment);
+
       onAdd({
         ...formData,
+        monthlyRent: Number.isFinite(parsedMonthlyRent) ? parsedMonthlyRent : 0,
+        advancePayment: Number.isFinite(parsedAdvancePayment) ? parsedAdvancePayment : 0,
         photoUrl: finalPhotoUrl || undefined,
         documentUrl: leaseUrl || undefined,
         documentName: leaseDoc?.name || initialData?.documentName,
@@ -196,18 +205,26 @@ const EnrollTenant: React.FC<EnrollTenantProps> = ({ onAdd, onCancel, initialDat
                    </div>
                    <div>
                       <label className={labelClass}>Monthly Rent (INR)</label>
-                      <input required type="number" className={inputClass} value={formData.monthlyRent} onChange={e => setFormData({...formData, monthlyRent: parseInt(e.target.value)})} />
+                      <input required type="number" className={`${inputClass} no-spinner`} value={formData.monthlyRent} onChange={e => setFormData({...formData, monthlyRent: e.target.value})} />
+                   </div>
+                   <div>
+                      <label className={labelClass}>Annual Increment (%)</label>
+                      <input type="number" min="0" className={inputClass} value={formData.yearlyPercentage} onChange={e => setFormData({...formData, yearlyPercentage: Number(e.target.value) || 0})} />
+                   </div>
+                   <div>
+                      <label className={labelClass}>Tenant Since</label>
+                      <input required type="date" className={inputClass} value={formData.tenantSince} onChange={e => setFormData({...formData, tenantSince: e.target.value})} />
                    </div>
                    <div>
                       <label className={labelClass}>Advance/Security Deposit (INR)</label>
-                      <input type="number" className={inputClass} value={formData.advancePayment} onChange={e => setFormData({...formData, advancePayment: parseInt(e.target.value)})} />
+                      <input type="number" className={`${inputClass} no-spinner`} value={formData.advancePayment} onChange={e => setFormData({...formData, advancePayment: e.target.value})} />
                    </div>
                    <div>
-                      <label className={labelClass}>Contract Commencement</label>
+                      <label className={labelClass}>Contract Start Date</label>
                       <input required type="date" className={inputClass} value={formData.leaseStart} onChange={e => setFormData({...formData, leaseStart: e.target.value})} />
                    </div>
                    <div>
-                      <label className={labelClass}>Contract Expiry</label>
+                      <label className={labelClass}>Contract End Date</label>
                       <input required type="date" className={inputClass} value={formData.leaseEnd} onChange={e => setFormData({...formData, leaseEnd: e.target.value})} />
                    </div>
                 </div>

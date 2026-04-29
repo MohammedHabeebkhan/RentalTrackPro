@@ -9,6 +9,7 @@ export interface TenantDocument extends Document {
   propertyAddress: string;
   leaseStart: string;
   leaseEnd: string;
+  tenantSince: string;
   monthlyRent: number;
   yearlyPercentage?: number;
   advancePayment?: number;
@@ -51,6 +52,7 @@ const tenantSchema = new Schema<TenantDocument>(
     propertyAddress: { type: String, required: true },
     leaseStart: { type: String, required: true },
     leaseEnd: { type: String, required: true },
+    tenantSince: { type: String, default: () => new Date().toISOString().split('T')[0] },
     monthlyRent: { type: Number, required: true },
     yearlyPercentage: { type: Number, default: 0 },
     advancePayment: { type: Number, default: 0 },

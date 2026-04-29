@@ -29,11 +29,12 @@ const Dashboard: React.FC<DashboardProps> = ({ tenants, alerts, theme, onViewTen
   };
 
   const stats: FinancialStats = useMemo(() => {
-    const activeTenants = tenants.filter(t => t.status === 'Active');
+    const tenantList = Array.isArray(tenants) ? tenants : [];
+    const activeTenants = tenantList.filter(t => t.status === 'Active');
     const monthlyExpected = activeTenants.reduce((sum, t) => sum + calculateEffectiveMonthlyRent(t), 0);
     const yearlyExpected = monthlyExpected * 12;
     
-    const collected = tenants.reduce((total, tenant) => {
+    const collected = tenantList.reduce((total, tenant) => {
       const tenantPaid = (tenant.paymentHistory || [])
         .filter(p => p.status === 'Paid')
         .reduce((sum, p) => sum + p.amount, 0);

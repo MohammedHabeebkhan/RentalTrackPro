@@ -52,10 +52,12 @@ export async function POST(request: Request) {
   await connectToDatabase();
 
   const yearlyPercentage = Number(body.yearlyPercentage);
+  const tenantSince = body.tenantSince || new Date().toISOString().split('T')[0];
 
   const newTenant = await TenantModel.create({
     ...body,
     yearlyPercentage: Number.isFinite(yearlyPercentage) ? yearlyPercentage : 0,
+    tenantSince,
     userId: decodedToken.id, // Add userId from authenticated user
     createdAt: new Date(),
     paymentHistory: body.paymentHistory || []

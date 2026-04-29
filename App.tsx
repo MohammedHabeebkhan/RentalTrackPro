@@ -74,8 +74,9 @@ const App: React.FC = () => {
   const alerts: AppAlert[] = useMemo(() => {
     const today = new Date();
     const generatedAlerts: AppAlert[] = [];
+    const tenantList = Array.isArray(tenants) ? tenants : [];
 
-    tenants.forEach(tenant => {
+    tenantList.forEach(tenant => {
       if (tenant.status !== 'Active') return;
       
       const leaseStartDate = new Date(tenant.leaseStart);

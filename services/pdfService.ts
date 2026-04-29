@@ -7,6 +7,21 @@ import { Tenant } from '../types';
 // Updated high-quality version of the logo for the PDF
 
 const formatCurrency = (amount: number) => `INR ${amount.toLocaleString()}`;
+const formatDate = (value?: string) => {
+  if (!value) return 'N/A';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString('default', { day: '2-digit', month: 'short', year: 'numeric' });
+};
+
+const getAnnualIncrementNote = (tenant: Tenant): string | null => {
+  if (!tenant.yearlyPercentage || !tenant.leaseStart) return null;
+  const startDate = new Date(tenant.leaseStart);
+  if (Number.isNaN(startDate.getTime())) return null;
+  const nextIncreaseDate = new Date(startDate);
+  nextIncreaseDate.setFullYear(startDate.getFullYear() + 1);
+  return `Rent will increase by ${tenant.yearlyPercentage}% after 12 months from contract start date (${formatDate(nextIncreaseDate.toISOString())}).`;
+};
 
 export const exportTenantStatement = (tenant: Tenant) => {
   const doc = new jsPDF();
@@ -38,11 +53,14 @@ export const exportTenantStatement = (tenant: Tenant) => {
   doc.setFont('helvetica', 'bold');
   doc.text('Resident Details', 15, 60);
   
+  const tenantSinceValue = tenant.tenantSince || tenant.createdAt || tenant.leaseStart;
+
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
   doc.text(`Name: ${tenant.fullName}`, 15, 68);
   doc.text(`Contact: ${tenant.phone}`, 15, 74);
   doc.text(`Email: ${tenant.email}`, 15, 80);
+  doc.text(`Tenant Since: ${formatDate(tenantSinceValue)}`, 15, 86);
   
   doc.setFont('helvetica', 'bold');
   doc.text('Property Info', 120, 60);
@@ -50,8 +68,19 @@ export const exportTenantStatement = (tenant: Tenant) => {
   const currentRent = calculateEffectiveMonthlyRent(tenant);
   doc.text(`Address: ${tenant.propertyAddress}`, 120, 68);
   doc.text(`Monthly Rent: ${formatCurrency(currentRent)}`, 120, 74);
-  doc.text(`Annual Increase: ${tenant.yearlyPercentage ?? 0}%`, 120, 80);
-  doc.text(`Advance Paid: ${formatCurrency(tenant.advancePayment || 0)}`, 120, 86);
+  doc.text(`Contract: ${formatDate(tenant.leaseStart)} - ${formatDate(tenant.leaseEnd)}`, 120, 80);
+  if (tenant.yearlyPercentage) {
+    doc.text(`Annual Increase: ${tenant.yearlyPercentage}%`, 120, 86);
+    doc.text(`Advance Paid: ${formatCurrency(tenant.advancePayment || 0)}`, 120, 92);
+    const incrementNote = getAnnualIncrementNote(tenant);
+    if (incrementNote) {
+      doc.setFontSize(9);
+      doc.text(incrementNote, 15, 102);
+      doc.setFontSize(10);
+    }
+  } else {
+    doc.text(`Advance Paid: ${formatCurrency(tenant.advancePayment || 0)}`, 120, 86);
+  }
 
   const tableData = (tenant.paymentHistory || []).map(p => [
     new Date(p.date).toLocaleDateString(),
@@ -62,7 +91,7 @@ export const exportTenantStatement = (tenant: Tenant) => {
   ]);
 
   autoTable(doc, {
-    startY: 95,
+    startY: 105,
     head: [['Date', 'Method', 'Amount', 'Status', 'Reference']],
     body: tableData,
     theme: 'grid',
@@ -110,6 +139,8 @@ export const generateInvoicePDF = (tenant: Tenant, amount: number) => {
   doc.text(`Ref: INV-${Math.floor(Date.now() / 100000)}`, pageWidth - 15, 35, { align: 'right' });
   doc.text(`Date: ${new Date().toLocaleDateString()}`, pageWidth - 15, 42, { align: 'right' });
 
+  const invoiceTenantSinceValue = tenant.tenantSince || tenant.createdAt || tenant.leaseStart;
+
   doc.setTextColor(15, 23, 42);
   doc.setFontSize(12);
   doc.setFont('helvetica', 'bold');
@@ -118,17 +149,20 @@ export const generateInvoicePDF = (tenant: Tenant, amount: number) => {
   doc.text(tenant.fullName, 15, 83);
   doc.text(tenant.propertyAddress, 15, 90);
   doc.text(tenant.phone, 15, 97);
-  doc.text(`Annual Increase: ${tenant.yearlyPercentage ?? 0}%`, 15, 104);
+  doc.text(`Tenant Since: ${formatDate(invoiceTenantSinceValue)}`, 15, 104);
+  doc.text(`Contract: ${formatDate(tenant.leaseStart)} - ${formatDate(tenant.leaseEnd)}`, 15, 111);
+  const invoiceIncrementNote = getAnnualIncrementNote(tenant);
+  if (invoiceIncrementNote) {
+    doc.setFontSize(9);
+    doc.text(invoiceIncrementNote, 15, 118);
+    doc.setFontSize(10);
+  }
 
   autoTable(doc, {
-    startY: 118,
+    startY: invoiceIncrementNote ? 132 : 130,
     head: [['Description', 'Period', 'Total Amount']],
     body: [
-      [
-        `Monthly Rent Charge${tenant.yearlyPercentage ? ` (includes ${tenant.yearlyPercentage}% annual increase)` : ''}`,
-        `${new Date().toLocaleString('default', { month: 'long' })} ${new Date().getFullYear()}`,
-        formatCurrency(amount)
-      ],
+      ['Monthly Rent Charge', `${new Date().toLocaleString('default', { month: 'long' })} ${new Date().getFullYear()}`, formatCurrency(amount)],
       ['Property Maintenance', 'Cycle Period', 'INR 0.00'],
     ],
     theme: 'striped',

@@ -16,6 +16,7 @@ export interface Tenant {
   propertyAddress: string;
   leaseStart: string;
   leaseEnd: string;
+  tenantSince?: string;
   monthlyRent: number;
   yearlyPercentage?: number;
   advancePayment?: number;
