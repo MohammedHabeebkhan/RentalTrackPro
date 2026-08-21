@@ -1,14 +1,14 @@
 
 import {
-    Camera,
-    CheckCircle2,
-    Loader2,
-    Mail,
-    Moon,
-    ShieldCheck,
-    Sun,
-    Trash2,
-    User as UserIcon
+  Camera,
+  CheckCircle2,
+  Loader2,
+  Mail,
+  Moon,
+  ShieldCheck,
+  Sun,
+  Trash2,
+  User as UserIcon
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { updateUserProfile } from '../services/authService';
@@ -97,10 +97,10 @@ const Settings: React.FC<SettingsProps> = ({ user, token, onUpdateUser, theme, o
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="space-y-10">
           {/* Avatar Section */}
-          <div className={`${cardBg} p-10 rounded-[3rem] border flex flex-col items-center text-center`}>
+          <div className={`${cardBg} p-10 rounded-[1.5rem] border flex flex-col items-center text-center`}>
             <h3 className={labelClass}>Profile Visuals</h3>
             <div className="relative w-36 h-36 mt-8 mb-8 group">
-              <div className={`w-full h-full rounded-[2.5rem] border-4 border-indigo-500/20 overflow-hidden shadow-2xl relative ${isUploading ? 'opacity-50' : ''}`}>
+              <div className={`w-full h-full rounded-[1.5rem] border-4 border-indigo-500/20 overflow-hidden shadow-2xl relative ${isUploading ? 'opacity-50' : ''}`}>
                 <img 
                   src={photoPreview || "https://picsum.photos/seed/manager/200/200"} 
                   alt="Profile" 
@@ -128,7 +128,7 @@ const Settings: React.FC<SettingsProps> = ({ user, token, onUpdateUser, theme, o
           </div>
 
           {/* Security Summary */}
-          <div className={`${cardBg} p-10 rounded-[3rem] border`}>
+          <div className={`${cardBg} p-10 rounded-[1.5rem] border`}>
              <h3 className={labelClass}>Digital Security</h3>
              <div className="mt-6 space-y-6">
                 <div className="flex items-start gap-4">
@@ -154,7 +154,7 @@ const Settings: React.FC<SettingsProps> = ({ user, token, onUpdateUser, theme, o
         </div>
 
         <div className="lg:col-span-2 space-y-10">
-          <form onSubmit={handleSave} className={`${cardBg} p-10 rounded-[3rem] border space-y-10`}>
+          <form onSubmit={handleSave} className={`${cardBg} p-10 rounded-[1.5rem] border space-y-10`}>
             <div>
               <div className="flex items-center gap-3 mb-8">
                 <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
@@ -194,7 +194,7 @@ const Settings: React.FC<SettingsProps> = ({ user, token, onUpdateUser, theme, o
                 <div className="w-1.5 h-6 bg-indigo-600 rounded-full" />
                 <h3 className={`text-lg font-black ${textColor}`}>Interface & Experience</h3>
               </div>
-              <div className="p-8 bg-slate-100 dark:bg-slate-800/40 rounded-[2rem] border border-slate-200 dark:border-slate-800">
+              <div className="p-8 bg-slate-100 dark:bg-slate-800/40 rounded-[1.5rem] border border-slate-200 dark:border-slate-800">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className={`text-[11px] font-black uppercase tracking-widest ${textColor}`}>System Color Mode</h4>

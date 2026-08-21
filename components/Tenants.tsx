@@ -1,14 +1,14 @@
 
 import {
-    AlertTriangle,
-    CheckCircle,
-    Clock,
-    Edit2,
-    Eye,
-    FileQuestion,
-    MapPin,
-    Search,
-    Users
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  Edit2,
+  Eye,
+  FileQuestion,
+  MapPin,
+  Search,
+  Users
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { Tenant, Theme } from '../types';
@@ -102,7 +102,7 @@ const Tenants: React.FC<TenantsProps> = ({ tenants, onEdit, onViewDetails, theme
         </div>
       </div>
 
-      <div className={`${cardBg} rounded-[2.5rem] border overflow-hidden transition-colors`}>
+      <div className={`${cardBg} rounded-[1.5rem] border overflow-hidden transition-colors`}>
         <div className="overflow-x-auto no-scrollbar">
           <table className="w-full text-left">
             <thead className={theme === 'dark' ? 'bg-slate-800/50' : 'bg-slate-50'}>

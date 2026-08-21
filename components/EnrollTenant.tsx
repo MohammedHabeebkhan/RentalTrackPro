@@ -1,12 +1,12 @@
 
 import {
-    Activity,
-    CheckCircle2,
-    FileText,
-    Image as ImageIcon,
-    Loader2,
-    ShieldCheck,
-    X
+  Activity,
+  CheckCircle2,
+  FileText,
+  Image as ImageIcon,
+  Loader2,
+  ShieldCheck,
+  X
 } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { uploadToCloudinary } from '../services/uploadService';
@@ -142,10 +142,10 @@ const EnrollTenant: React.FC<EnrollTenantProps> = ({ onAdd, onCancel, initialDat
       <form onSubmit={handleSubmit} className="space-y-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
           {/* Identity Section */}
-          <div className={`${cardClass} p-10 rounded-[3rem] border flex flex-col items-center`}>
+          <div className={`${cardClass} p-10 rounded-[1.5rem] border flex flex-col items-center`}>
              <h3 className={labelClass}>Visual Identity</h3>
              <div className="relative w-48 h-48 mt-8 mb-10 group cursor-pointer">
-                <div className={`w-full h-full rounded-[2.5rem] border-4 border-dashed flex items-center justify-center overflow-hidden transition-all relative ${photoPreview ? 'border-indigo-500' : 'border-slate-700 bg-slate-800/20'}`}>
+                <div className={`w-full h-full rounded-[1.5rem] border-4 border-dashed flex items-center justify-center overflow-hidden transition-all relative ${photoPreview ? 'border-indigo-500' : 'border-slate-700 bg-slate-800/20'}`}>
                   {photoPreview ? (
                     <img src={photoPreview} alt="" className="w-full h-full object-cover" />
                   ) : (
@@ -182,7 +182,7 @@ const EnrollTenant: React.FC<EnrollTenantProps> = ({ onAdd, onCancel, initialDat
 
           <div className="lg:col-span-2 space-y-10">
              {/* Financials Section */}
-             <div className={`${cardClass} p-10 rounded-[3rem] border`}>
+             <div className={`${cardClass} p-10 rounded-[1.5rem] border`}>
                 <div className="flex items-center justify-between mb-8">
                   <h3 className={labelClass}>Financial Commitment & Property</h3>
                   <div className="flex items-center gap-2">
@@ -234,7 +234,7 @@ const EnrollTenant: React.FC<EnrollTenantProps> = ({ onAdd, onCancel, initialDat
              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div 
                   onClick={() => leaseInputRef.current?.click()}
-                  className={`${cardClass} p-8 rounded-[2.5rem] border cursor-pointer hover:border-indigo-500/50 transition-all flex flex-col items-center text-center group`}
+                  className={`${cardClass} p-8 rounded-[1.5rem] border cursor-pointer hover:border-indigo-500/50 transition-all flex flex-col items-center text-center group`}
                 >
                    <input type="file" ref={leaseInputRef} className="hidden" onChange={handleLeaseUpload} />
                    <div className={`p-5 rounded-3xl mb-5 transition-all ${leaseUrl ? 'bg-indigo-600 text-white' : 'bg-indigo-500/10 text-indigo-400 group-hover:scale-110'}`}>
@@ -248,7 +248,7 @@ const EnrollTenant: React.FC<EnrollTenantProps> = ({ onAdd, onCancel, initialDat
 
                 <div 
                   onClick={() => aadharInputRef.current?.click()}
-                  className={`${cardClass} p-8 rounded-[2.5rem] border cursor-pointer hover:border-emerald-500/50 transition-all flex flex-col items-center text-center group`}
+                  className={`${cardClass} p-8 rounded-[1.5rem] border cursor-pointer hover:border-emerald-500/50 transition-all flex flex-col items-center text-center group`}
                 >
                    <input type="file" ref={aadharInputRef} className="hidden" onChange={handleAadharUpload} />
                    <div className={`p-5 rounded-3xl mb-5 transition-all ${aadharUrl ? 'bg-emerald-600 text-white' : 'bg-emerald-500/10 text-emerald-400 group-hover:scale-110'}`}>
@@ -268,10 +268,10 @@ const EnrollTenant: React.FC<EnrollTenantProps> = ({ onAdd, onCancel, initialDat
            <button 
              disabled={isSubmitting || isUploadingLease || isUploadingAadhar} 
              type="submit" 
-             className="px-16 py-5 bg-indigo-600 text-white rounded-[2rem] font-black text-sm shadow-3xl shadow-indigo-900/40 hover:scale-[1.03] active:scale-[0.98] transition-all flex items-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed"
+             className="px-16 py-5 bg-indigo-600 text-white rounded-[1.5rem] font-black text-sm shadow-3xl shadow-indigo-900/40 hover:scale-[1.03] active:scale-[0.98] transition-all flex items-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed"
            >
               {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : <CheckCircle2 size={20} />}
-              <span className="uppercase tracking-widest">{initialData ? 'Update Dossier' : 'Verify & Complete Enrollment'}</span>
+              <span className="uppercase tracking-widest">{initialData ? 'Update Details' : 'Verify & Complete Enrollment'}</span>
            </button>
         </div>
       </form>

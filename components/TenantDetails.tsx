@@ -1,25 +1,25 @@
 
 import {
-    AlertTriangle,
-    ArrowUpRight,
-    Calendar,
-    Check,
-    CheckCircle2,
-    ChevronRight,
-    CreditCard,
-    Download,
-    Edit3,
-    FileText,
-    History,
-    Loader2,
-    Mail,
-    MapPin,
-    Phone,
-    Plus,
-    ShieldCheck,
-    TrendingUp,
-    Wallet,
-    X
+   AlertTriangle,
+   ArrowUpRight,
+   Calendar,
+   Check,
+   CheckCircle2,
+   ChevronRight,
+   CreditCard,
+   Download,
+   Edit3,
+   FileText,
+   History,
+   Loader2,
+   Mail,
+   MapPin,
+   Phone,
+   Plus,
+   ShieldCheck,
+   TrendingUp,
+   Wallet,
+   X
 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { calculateEffectiveMonthlyRent, getNextRentIncreaseDate } from '../lib/rent';
@@ -192,11 +192,11 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
         </div>
       )}
 
-      <div className={`${modalBg} w-full max-w-6xl h-[92vh] rounded-[3rem] overflow-hidden shadow-3xl flex flex-col border border-white/10`}>
+      <div className={`${modalBg} w-full max-w-6xl h-[92vh] rounded-[1.5rem] overflow-hidden shadow-3xl flex flex-col border border-white/10`}>
         {/* Header */}
-        <div className={`${theme === 'dark' ? 'bg-slate-900/50' : 'bg-white'} px-10 py-8 border-b transition-colors flex items-center justify-between`}>
+        <div className={`${theme === 'dark' ? 'bg-slate-900/50' : 'bg-white'} px-10 py-8 border-b transition-colors flex items-center justify-between`} style={{overflowY:'auto'}}>
           <div className="flex items-center gap-8">
-            <div className="w-24 h-24 rounded-[2.5rem] bg-indigo-500/10 border-4 border-indigo-500/20 overflow-hidden shrink-0">
+            <div className="w-24 h-24 rounded-[1rem] bg-indigo-500/10 border-4 border-indigo-500/20 overflow-hidden shrink-0">
                <img src={tenant.photoUrl || `https://picsum.photos/seed/${tenant.id}/200/200`} alt="" className="w-full h-full object-cover" />
             </div>
             <div>
@@ -225,23 +225,23 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
         </div>
 
         <div className="flex-1 overflow-y-auto p-10 space-y-10 no-scrollbar">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-             <div className={`${cardBg} p-8 rounded-[2.5rem] border`}>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+             <div className={`${cardBg} p-8 rounded-[1.5rem] border`}>
                 <TrendingUp size={24} className="text-indigo-500 mb-4" />
                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Lease Status</p>
                 <p className={`text-xl font-black mt-1 ${textColor}`}>{new Date(tenant.leaseEnd) > new Date() ? 'Secure' : 'Expiring'}</p>
              </div>
-             <div className={`${cardBg} p-8 rounded-[2.5rem] border`}>
+             <div className={`${cardBg} p-8 rounded-[1.5rem] border`}>
                 <CreditCard size={24} className="text-emerald-500 mb-4" />
                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Total Collections</p>
                 <p className={`text-xl font-black mt-1 ${textColor}`}>₹{totalPaid.toLocaleString()}</p>
              </div>
-             <div className={`${cardBg} p-8 rounded-[2.5rem] border`}>
+             <div className={`${cardBg} p-8 rounded-[1.5rem] border`}>
                 <Wallet size={24} className="text-amber-500 mb-4" />
                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Advance Payment</p>
                 <p className={`text-xl font-black mt-1 ${textColor}`}>₹{(tenant.advancePayment || 0).toLocaleString()}</p>
              </div>
-             <div className={`${cardBg} p-8 rounded-[2.5rem] border`}>
+             <div className={`${cardBg} p-8 rounded-[1.5rem] border`}>
                 <Calendar size={24} className="text-indigo-500 mb-4" />
                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Current Monthly Rent</p>
                 <p className={`text-xl font-black mt-1 ${textColor}`}>₹{currentRent.toLocaleString()}</p>
@@ -277,7 +277,7 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
                 </div>
 
                 {isAddingPayment && (
-                   <form onSubmit={handleSavePayment} className={`${cardBg} p-8 rounded-[2.5rem] border space-y-6 animate-in slide-in-from-top-4 duration-300`}>
+                   <form onSubmit={handleSavePayment} className={`${cardBg} p-8 rounded-[1.5rem] border space-y-6 animate-in slide-in-from-top-4 duration-300`}>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                          <div>
                             <label className="text-[10px] font-black text-slate-500 uppercase block mb-1.5">Date</label>
@@ -304,7 +304,7 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
                    </form>
                 )}
 
-                <div className={`${cardBg} rounded-[2.5rem] border overflow-hidden`}>
+                <div className={`${cardBg} rounded-[1.5rem] border overflow-hidden`}>
                    <table className="w-full text-left">
                       <thead className={theme === 'dark' ? 'bg-slate-800/50' : 'bg-slate-50'}>
                          <tr>
@@ -335,7 +335,7 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
              </div>
 
              <div className="space-y-8">
-                <div className={`${cardBg} p-8 rounded-[2.5rem] border`}>
+                <div className={`${cardBg} p-8 rounded-[1.5rem] border`}>
                    <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6">Property Assignment</h3>
                    <div className="flex items-start gap-4">
                       <MapPin size={24} className="text-indigo-500 shrink-0 mt-1" />
@@ -343,7 +343,7 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
                    </div>
                 </div>
 
-                <div className="bg-indigo-600 p-8 rounded-[2.5rem] shadow-2xl shadow-indigo-900/40 relative overflow-hidden">
+                <div className="bg-indigo-600 p-8 rounded-[1.5rem] shadow-2xl shadow-indigo-900/40 relative overflow-hidden">
                    <div className="relative z-10">
                       <p className="text-[10px] font-black text-indigo-200 uppercase tracking-widest mb-1">Outstanding Balance</p>
                       <h4 className="text-3xl font-black text-white mb-8">₹{pendingAmount.toLocaleString()}</h4>
@@ -359,7 +359,7 @@ const TenantDetails: React.FC<TenantDetailsProps> = ({ tenant, isOpen, onClose, 
                    <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
                 </div>
 
-                <div className={`${cardBg} p-8 rounded-[2.5rem] border`}>
+                <div className={`${cardBg} p-8 rounded-[1.5rem] border`}>
                    <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6">Verified Vault</h3>
                    <div className="space-y-4">
                       {tenant.documentUrl && (

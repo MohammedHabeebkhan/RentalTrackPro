@@ -150,9 +150,9 @@ const Dashboard: React.FC<DashboardProps> = ({ tenants, alerts, theme, onViewTen
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {kpis.map((kpi, idx) => (
-          <div key={idx} className={`${cardBg} p-8 rounded-[2.5rem] border shadow-2xl shadow-indigo-500/5 transition-all hover:scale-[1.02]`}>
+          <div key={idx} className={`${cardBg} p-6 rounded-[1.5rem] border shadow-2xl shadow-indigo-500/5 transition-all hover:scale-[1.02]`}>
             <div className="flex items-center justify-between mb-6">
               <div className={`p-3 rounded-2xl ${kpi.color}`}>
                 {kpi.icon}
@@ -167,9 +167,9 @@ const Dashboard: React.FC<DashboardProps> = ({ tenants, alerts, theme, onViewTen
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2 space-y-10">
-           <div className={`${cardBg} p-10 rounded-[3rem] border shadow-2xl shadow-slate-900/5`}>
+           <div className={`${cardBg} p-10 rounded-[1.5rem] border shadow-2xl shadow-slate-900/5`}>
               <div className="flex items-center justify-between mb-10">
                  <h3 className={`text-xl font-black ${textColor}`}>Revenue Realization Graph</h3>
                  <div className="flex gap-4 text-[10px] font-black uppercase tracking-widest text-slate-500">
@@ -197,7 +197,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tenants, alerts, theme, onViewTen
               </div>
            </div>
 
-           <div className={`${cardBg} p-10 rounded-[3rem] border`}>
+           <div className={`${cardBg} p-10 rounded-[1.5rem] border`}>
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-3">
                   <Bell size={22} className="text-rose-500" />
@@ -243,7 +243,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tenants, alerts, theme, onViewTen
         </div>
 
         <div className="space-y-8">
-           <div className="bg-slate-900 p-8 rounded-[3rem] shadow-3xl relative overflow-hidden group">
+           <div className="bg-slate-900 p-8 rounded-[1.5rem] shadow-3xl relative overflow-hidden group">
               <div className="relative z-10">
                  <div className="flex items-center gap-3 mb-6">
                     <Sparkles size={24} className="text-indigo-400" />
@@ -257,7 +257,7 @@ const Dashboard: React.FC<DashboardProps> = ({ tenants, alerts, theme, onViewTen
               <div className="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-indigo-600 rounded-full blur-[80px] opacity-20 transition-all group-hover:opacity-40" />
            </div>
 
-           <div className={`${cardBg} p-8 rounded-[2.5rem] border`}>
+           <div className={`${cardBg} p-8 rounded-[1.5rem] border`}>
               <h3 className={`text-sm font-black uppercase tracking-widest mb-6 ${theme === 'dark' ? 'text-slate-400' : 'text-slate-500'}`}>Property Efficiency</h3>
               <div className="space-y-8">
                  <div>
